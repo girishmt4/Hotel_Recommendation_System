@@ -1,0 +1,53 @@
+pip install -r requirements.txt
+
+python3 separate_datasets.py 
+
+java -cp ./stanford-ner-2014-06-16/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -prop ./NER-Tagger/hotel.prop 
+
+java -cp ./stanford-ner-2014-06-16/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./NER-Tagger/hotel-ner-model.ser.gz -testFile ./test_files/test_file.tsv 
+
+python3 partition_dataset_hotelwise.py 
+
+python3 remove_stopwords.py 
+
+make -C ./apriori/apriori/src 
+
+./apriori/apriori/src/apriori -s0.176018531m2n2  ./text_files/file_without_stopwords.txt ./training_files/associations.out 
+
+python3 analyze_associations.py 
+
+java -cp ./stanford-ner-2014-06-16/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -prop ./NER-Tagger/hotel_2.prop 
+
+java -cp ./stanford-ner-2014-06-16/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./NER-Tagger/hotel-2-ner-model.ser.gz -testFile ./test_files/test_file.tsv 
+
+python3 word_embeddings.py 
+
+python3 analyze_embeddings.py 
+
+java -cp ./stanford-ner-2014-06-16/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -prop ./NER-Tagger/hotel_3.prop 
+
+java -cp ./stanford-ner-2014-06-16/stanford-ner.jar edu.stanford.nlp.ie.crf.CRFClassifier -loadClassifier ./NER-Tagger/hotel-3-ner-model.ser.gz -testFile ./test_files/test_file.tsv 
+
+python3 fast_text.py 
+
+java -cp ./stanford-ner-2014-06-16/stanford-ner.jar edu.stanford.nlp.ie.NERServer -port 9199 -loadClassifier ./NER-Tagger/hotel-2-ner-model.ser.gz	
+
+python3 extract_sentences_vader.py 
+
+python3 extract_sentences_fasttext.py
+
+python3 recommender_VADER_Basic.py 0 2 3
+
+python3 recommender_VADER_cosine.py 0 2 3
+
+python3 recommender_FastText_Basic.py 0 2 3
+
+python3 recommender_FastText_cosine.py 0 2 3
+
+python3 test_VADER_Basic.py
+
+python3 test_VADER_cosine.py
+
+python3 test_FastText_Basic.py
+
+python3 test_FastText_cosine.py 
